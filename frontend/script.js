@@ -129,20 +129,26 @@ function renderGroups() {
 
   for (let group in groups) {
     const groupDiv = document.createElement("div");
+    groupDiv.id = 'group-section-' + group.replace(/[^a-zA-Z0-9]/g, '');
     groupDiv.innerHTML = `
-      <div class="group-title">
-        📂 ${group}
-        ${
-          isAdmin
-            ? `<button class="edit-group-btn" onclick="editGroupNamePrompt('${group}')" style="float:right; margin-left:10px;">✏️ Edit Name</button>
-               <button class="delete-group-btn" onclick="deleteGroup('${group}')" style="float:right; margin-left:10px;">🗑️ Delete Group</button>`
-            : ""
-        }
+      <div class="group-title" style="display: flex; align-items: center; justify-content: space-between;">
+        <span>📂 ${group}</span>
+        <span>
+          <button class="toggle-group-btn" style="margin-right: 8px; border: none; background: none; font-size: 18px; cursor: pointer;" onclick="toggleGroupSection('${groupDiv.id}', this)">🙈</button>
+          ${
+            isAdmin
+              ? `<button class=\"edit-group-btn\" onclick=\"editGroupNamePrompt('${group}')\" style=\"margin-left:10px;\">✏️ Edit Name</button>
+                 <button class=\"delete-group-btn\" onclick=\"deleteGroup('${group}')\" style=\"margin-left:10px;\">🗑️ Delete Group</button>`
+              : ""
+          }
+        </span>
       </div>
     `;
     // Add spacing before notes for visual separation
     const notesWrapper = document.createElement('div');
     notesWrapper.style.marginTop = '18px';
+    notesWrapper.className = 'notes-wrapper';
+    notesWrapper.style.display = 'none'; // Hide by default
     groups[group].forEach((note, index) => {
       const noteDiv = document.createElement("div");
       noteDiv.className = "note";
@@ -179,6 +185,21 @@ window.toggleNoteDetails = function(detailsId) {
   } else {
     details.style.display = 'none';
     if (arrow) arrow.textContent = '▶';
+  }
+};
+
+// Add this function to window for toggling group visibility
+window.toggleGroupSection = function(groupDivId, btn) {
+  const groupDiv = document.getElementById(groupDivId);
+  if (!groupDiv) return;
+  const notesWrapper = groupDiv.querySelector('.notes-wrapper');
+  if (!notesWrapper) return;
+  if (notesWrapper.style.display === 'none') {
+    notesWrapper.style.display = '';
+    btn.textContent = '👁️';
+  } else {
+    notesWrapper.style.display = 'none';
+    btn.textContent = '🙈';
   }
 };
 
