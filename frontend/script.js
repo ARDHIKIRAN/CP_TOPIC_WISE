@@ -146,7 +146,7 @@ function renderGroups() {
     `;
     // Add spacing before notes for visual separation
     const notesWrapper = document.createElement('div');
-    notesWrapper.style.marginTop = '18px';
+    notesWrapper.style.marginTop = '0'; // Remove extra space on init
     notesWrapper.className = 'notes-wrapper';
     notesWrapper.style.display = 'none'; // Hide by default
     groups[group].forEach((note, index) => {
@@ -159,7 +159,12 @@ function renderGroups() {
           <h3 style="margin: 0;">${note.title || "Untitled Note"}</h3>
         </div>
         <div id="${detailsId}" class="note-details" style="display: none;">
-          ${note.code ? `<pre><code>${note.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>` : ""}
+          ${note.code ? `
+            <div class='code-block-interactive' style="position:relative; margin-bottom:10px;">
+              <pre style="background:#222; color:#fff; border-radius:8px; padding:0; overflow-x:auto; font-size:15px; margin:0;"><code style="display:block; padding:14px 16px;">${note.code.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/^[\r\n]+/, '')}</code></pre>
+              <button onclick="copyCodeToClipboard(this)" style="position:absolute; top:8px; right:12px; background:#444; color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:13px; cursor:pointer;">Copy</button>
+            </div>
+          ` : ""}
           ${note.explanation ? `<pre class=\"explanation\">${note.explanation}</pre>` : ""}
           ${
             isAdmin
@@ -264,3 +269,12 @@ function editNote(group, index) {
   document.getElementById("explanation").value = note.explanation;
   document.getElementById("editIndex").value = index;
 }
+
+// Add this to window for code copy
+window.copyCodeToClipboard = function(btn) {
+  const code = btn.parentElement.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
+  });
+};
