@@ -1,0 +1,16 @@
+{
+  "BINARY SEARCH": [
+    {
+      "title": "bs",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n   int n;\n   cin >> n;\n   int arr[n];\n   for(int i=0;i<n;i++){\n       cin >> arr[i];   // taking input\n   }\n   \n   int nse[n]; // store index of next smaller for each ith , if not there store n (which mean not valid)\n   for(int i=n-1;i>=0;i--){ // TC -> O(N)\n      int val = i + 1;\n      while(val < n && arr[val] >= arr[i]){ // Overall this while loop will run for O(N) \n          val = nse[val];\n      }\n      nse[i] = val;\n   }\n   \n   for(int i=0;i<n;i++){\n      cout << nse[i] << \" \";\n   }cout << '\\n';\n}",
+      "explanation": "daadad"
+    }
+  ],
+  "1dp": [
+    {
+      "title": "wdwfw",
+      "code": "wfwfw",
+      "explanation": "wfwfw"
+    }
+  ]
+}

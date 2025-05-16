@@ -1,0 +1,302 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f7f7fa;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 2.2rem;
+  color: #6c63ff;
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px #6c63ff22, 0 1px 0 #fff;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+
+.user-mode h1 {
+  color: #a385ff !important;
+  text-shadow: 0 2px 12px #23262f, 0 1px 0 #23262f;
+}
+
+.group-form, .note-form {
+  background: #fff;
+  max-width: 500px;
+  margin: 24px auto 0 auto;
+  padding: 24px 28px 18px 28px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0001;
+}
+
+.group-form h3, .note-form h3 {
+  margin-top: 0;
+  color: #6c63ff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #eaf0ff 60%, #fff 100%);
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 6px #6c63ff11;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-mode .group-form h3, .user-mode .note-form h3 {
+  color: #a385ff !important;
+  background: linear-gradient(90deg, #23262f 60%, #23262f00 100%) !important;
+  box-shadow: 0 1px 8px #23262f;
+}
+
+.group-form h3::before {
+  content: '➕';
+  margin-right: 8px;
+  font-size: 1.2em;
+  color: #6c63ff;
+}
+
+.note-form h3::before {
+  content: '📝';
+  margin-right: 8px;
+  font-size: 1.2em;
+  color: #6c63ff;
+}
+
+.user-mode .group-form h3::before,
+.user-mode .note-form h3::before {
+  color: #a385ff !important;
+}
+
+input[type="text"], textarea, select {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 8px 0 16px 0;
+  border: 1px solid #d0d4db;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f9f9fc;
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+
+input[type="text"]:focus, textarea:focus, select:focus {
+  border: 1.5px solid #6c63ff;
+  outline: none;
+}
+
+button {
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #5548c8;
+}
+
+.group-section {
+  max-width: 900px;
+  margin: 36px auto 0 auto;
+  padding: 0 12px 40px 12px;
+}
+
+.group-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 32px 0 0 0;
+  padding: 12px 0 0 0;
+  color: #4a5a6a;
+  border-top: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.note {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px #0001;
+  margin: 16px 0 0 0;
+  padding: 18px 18px 12px 18px;
+  position: relative;
+}
+
+.note h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: #2d3a4b;
+}
+
+.note pre {
+  background: #f4f4fa;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.98rem;
+  margin: 8px 0 8px 0;
+  overflow-x: auto;
+  color: #222;
+}
+
+.note .explanation {
+  background: #eaf0ff;
+  color: #2d3a4b;
+  font-size: 0.98rem;
+  margin-top: 6px;
+  margin-bottom: 0;
+  padding: 10px 12px;
+  border-left: 3px solid #6c63ff;
+}
+
+.delete-group-btn, .edit-group-btn {
+  background: #fff;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.95rem;
+  margin-left: 8px;
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+  transition: background 0.2s, color 0.2s;
+}
+
+.edit-group-btn {
+  color: #1976d2;
+  border: 1px solid #1976d2;
+}
+
+.delete-group-btn:hover {
+  background: #d32f2f;
+  color: #fff;
+}
+
+.edit-group-btn:hover {
+  background: #1976d2;
+  color: #fff;
+}
+
+.note-title-toggle {
+  user-select: none;
+}
+
+.dropdown-arrow {
+  font-size: 1.1em;
+  color: #6c63ff;
+  margin-right: 8px;
+  transition: transform 0.2s;
+}
+
+.user-mode {
+  background: #181a20 !important;
+  color: #e0e0e0 !important;
+  transition: background 0.3s, color 0.3s;
+}
+
+.user-mode .group-form, .user-mode .note-form, .user-mode .note {
+  background: #23262f !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 2px 16px #0006;
+  border: 1px solid #23262f;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.user-mode .group-title {
+  color: #b0b8c1 !important;
+  border-top: 1px solid #23262f !important;
+  background: linear-gradient(90deg, #23262f 60%, #23262f00 100%);
+  padding-left: 8px;
+}
+
+.user-mode .note pre, .user-mode .note .explanation {
+  background: #23262f !important;
+  color: #e0e0e0 !important;
+  border-left: 3px solid #6c63ff;
+  box-shadow: 0 1px 8px #0003;
+}
+
+.user-mode .delete-group-btn, .user-mode .edit-group-btn {
+  background: #23262f !important;
+  color: #ff6b81 !important;
+  border: 1px solid #ff6b81 !important;
+  box-shadow: 0 1px 4px #0002;
+}
+
+.user-mode .edit-group-btn {
+  color: #63b3ed !important;
+  border: 1px solid #63b3ed !important;
+}
+
+.user-mode .delete-group-btn:hover {
+  background: #ff6b81 !important;
+  color: #fff !important;
+}
+
+.user-mode .edit-group-btn:hover {
+  background: #63b3ed !important;
+  color: #23262f !important;
+}
+
+.user-mode .note-title-toggle {
+  background: #23262f;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-bottom: 2px;
+  transition: background 0.2s;
+}
+
+.user-mode .dropdown-arrow {
+  color: #a385ff;
+}
+
+.user-mode input[type="text"], .user-mode textarea, .user-mode select {
+  background: #23262f !important;
+  color: #e0e0e0 !important;
+  border: 1.5px solid #393e4b !important;
+  box-shadow: 0 1px 4px #0002;
+}
+
+.user-mode input[type="text"]:focus, .user-mode textarea:focus, .user-mode select:focus {
+  border: 1.5px solid #6c63ff !important;
+  outline: none;
+}
+
+.user-mode button {
+  background: linear-gradient(90deg, #6c63ff 60%, #23262f 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px #0003;
+}
+
+.user-mode button:hover {
+  background: linear-gradient(90deg, #5548c8 60%, #23262f 100%) !important;
+}
+
+.user-mode #themeToggleBtn {
+  background: #23262f !important;
+  color: #fff !important;
+  border: 1.5px solid #393e4b !important;
+  box-shadow: 0 2px 8px #0006 !important;
+}
+
+.user-mode #themeToggleIcon {
+  color: #a385ff !important;
+}
+
+.user-mode ::placeholder {
+  color: #b0b8c1 !important;
+  opacity: 1;
+}
+
+.user-mode .note h3 {
+  color: #e0e0e0 !important;
+}
