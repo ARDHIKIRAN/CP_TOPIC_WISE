@@ -1,16 +1,29 @@
 {
-  "BINARY SEARCH": [
+  "Stack Technique": [
     {
-      "title": "bs",
+      "title": "Next Smaller Element(NSE) :  find the next smaller element for each element in the array",
       "code": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n   int n;\n   cin >> n;\n   int arr[n];\n   for(int i=0;i<n;i++){\n       cin >> arr[i];   // taking input\n   }\n   \n   int nse[n]; // store index of next smaller for each ith , if not there store n (which mean not valid)\n   for(int i=n-1;i>=0;i--){ // TC -> O(N)\n      int val = i + 1;\n      while(val < n && arr[val] >= arr[i]){ // Overall this while loop will run for O(N) \n          val = nse[val];\n      }\n      nse[i] = val;\n   }\n   \n   for(int i=0;i<n;i++){\n      cout << nse[i] << \" \";\n   }cout << '\\n';\n}",
-      "explanation": "daadad"
-    }
-  ],
-  "1dp": [
+      "explanation": ""
+    },
     {
-      "title": "wdwfw",
-      "code": "wfwfw",
-      "explanation": "wfwfw"
+      "title": "Next Greater Element(NGE) :  find the next greater element for each element in the array",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n   int n;\n   cin >> n;\n   int arr[n];\n   for(int i=0;i<n;i++){\n       cin >> arr[i];   // taking input\n   }\n   \n   int nge[n]; // store index of next greater for each ith , if not there store n (which mean not valid)\n   for(int i=n-1;i>=0;i--){ // TC -> O(N)\n      int val = i + 1;\n      while(val < n && arr[val] <= arr[i]){ // Overall this while loop will run for O(N) \n          val = nge[val];\n      }\n      nge[i] = val;\n   }\n   \n   for(int i=0;i<n;i++){\n      cout << nge[i] << \" \";\n   }cout << '\\n';\n}",
+      "explanation": ""
+    },
+    {
+      "title": "Previous Greater Element(PGE) :  find the previous greater  element for each element in the array",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n   int n;\n   cin >> n;\n   int arr[n];\n   for(int i=0;i<n;i++){\n       cin >> arr[i];   // taking input\n   }\n   \n   int pge[n]; // store index of previous greater for each ith , if not there store -1 (which mean not valid)\n   for(int i=0;i<n;i++){ // TC -> O(N)\n      int val = i - 1;\n      while(val >= 0 && arr[val] <=  arr[i]){ // Overall this while loop will run for O(N) \n          val = pge[val];\n      }\n      pge[i] = val;\n   }\n   \n   for(int i=0;i<n;i++){\n      cout << pge[i] << \" \";\n   }cout << '\\n';\n}",
+      "explanation": ""
+    },
+    {
+      "title": "Previous Smaller Element(PGE) : find the previous smaller element for each element in the array",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\nint main(){\n   int n;\n   cin >> n;\n   int arr[n];\n   for(int i=0;i<n;i++){\n       cin >> arr[i];   // taking input\n   }\n   \n   int pse[n]; // store index of previous smaller for each ith , if not there store -1 (which mean not valid)\n   for(int i=0;i<n;i++){ // TC -> O(N)\n      int val = i - 1;\n      while(val >= 0 && arr[val] >=  arr[i]){ // Overall this while loop will run for O(N) \n          val = pse[val];\n      }\n      pse[i] = val;\n   }\n   \n   for(int i=0;i<n;i++){\n      cout << pse[i] << \" \";\n   }cout << '\\n';\n}",
+      "explanation": ""
+    },
+    {
+      "title": "Largest rectangle area and perimeter in Histogram",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\n#define int long long int \nvoid solve(){\n    int n;\n    cin >> n;\n    int arr[n];\n    for(int i=0;i<n;i++) cin >> arr[i];\n\n    int pse[n];\n    int nse[n];\n\n    for(int i=0;i<n;i++){\n        int val = i - 1;\n        while(val >= 0 && arr[val] >= arr[i]){\n            val = pse[val];\n        }\n        pse[i] = val;\n    }\n\n    for(int i=n-1;i>=0;i--){\n        int val = i + 1;\n        while(val < n && arr[val] >= arr[i]){\n            val = nse[val];\n        }\n        nse[i] = val;\n    }\n\n    int area = 0;\n    int perimeter = 0;\n    for(int i=0;i<n;i++) {\n        int h = arr[i];\n        int w = nse[i] - pse[i] - 1;\n        area = max(area,h*w);\n        perimeter = max(perimeter,2 * (h + w) );\n     }\n    cout << area << \" \" << perimeter << '\\n';\n}\nsigned main(){\n    int t;\n    cin >> t;\n    while(t--){\n        solve();\n    }\n}",
+      "explanation": ""
     }
   ]
 }
