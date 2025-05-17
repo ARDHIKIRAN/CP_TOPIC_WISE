@@ -25,5 +25,47 @@
       "code": "#include<bits/stdc++.h>\nusing namespace std;\n#define int long long int \nvoid solve(){\n    int n;\n    cin >> n;\n    int arr[n];\n    for(int i=0;i<n;i++) cin >> arr[i];\n\n    int pse[n];\n    int nse[n];\n\n    for(int i=0;i<n;i++){\n        int val = i - 1;\n        while(val >= 0 && arr[val] >= arr[i]){\n            val = pse[val];\n        }\n        pse[i] = val;\n    }\n\n    for(int i=n-1;i>=0;i--){\n        int val = i + 1;\n        while(val < n && arr[val] >= arr[i]){\n            val = nse[val];\n        }\n        nse[i] = val;\n    }\n\n    int area = 0;\n    int perimeter = 0;\n    for(int i=0;i<n;i++) {\n        int h = arr[i];\n        int w = nse[i] - pse[i] - 1;\n        area = max(area,h*w);\n        perimeter = max(perimeter,2 * (h + w) );\n     }\n    cout << area << \" \" << perimeter << '\\n';\n}\nsigned main(){\n    int t;\n    cin >> t;\n    while(t--){\n        solve();\n    }\n}",
       "explanation": ""
     }
+  ],
+  "Number Theory": [
+    {
+      "title": "Modular Arithmetic",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\nconst int MOD = 1e9 + 7;\n\nlong long int  power(int  a, long long int b){\n    if(b==0)return 1LL;\n    if(b==1)return a % MOD;\n    long long int res=1;\n    while(b){\n        if(b&1)res *= a;\n        a *= a;\n        res %= MOD;\n        a %= MOD;\n        b /= 2;\n    }\n    return res;\n}\n\nint inverse(int a){ // it only works for mod is prime number\n    return power(a,MOD-2) % MOD;\n}\n\nint main(){\n     int a,b;\n     cin >> a >> b;\n     \n     // Addition ((a + b) % mod)\n     int sum = (a % MOD + b % MOD) % MOD;\n     \n     //Substration((a - b) % mod)\n     int sub = (a % MOD - b % MOD + MOD) % MOD;\n     \n     // multiplication((a * b) % mod)\n     long long int  mul = (1LL * a % MOD * b % MOD) % MOD;\n     \n     \n     //Division (a/b % mod)\n     int divi = (a % MOD * inverse(b) % MOD) % MOD;\n     \n     \n     cout << \"Addition : \" << sum << endl;\n     cout << \"Substraction : \" << sub << endl;\n     cout << \"multiplication : \" << mul << endl;\n     cout << \"Division : \" << divi << endl;\n    \n\n}",
+      "explanation": ""
+    },
+    {
+      "title": "GCD & LCM",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\nint gcd(int a,int b){\n  if(b == 0) return a;\n  return gcd(b,a%b);\n}\nint main(){\n    int a,b;\n    cin >> a >> b;\n    \n    int _gcd = gcd(a,b);\n    int _lcm = (a * b) / _gcd;\n    \n    cout << \"GCD : \" << _gcd << endl;\n    cout << \"LCM : \" << _lcm << endl;\n    \n}",
+      "explanation": ""
+    },
+    {
+      "title": "Is Prime or not ?",
+      "code": "#include<bits/stdc++.h>\nusing namespace std;\n\nbool is_prime(int n){\n   if(n <= 1) return false;\n   for(int i=2;i*i<=n;i++){\n      if(n % i == 0){\n         return false;\n      }\n   }\n   return true;\n}\n\nint main(){\n    \n    int num;\n    cin >> num;\n    \n    \n    if(is_prime(num)){\n      cout << \"yes it is an prime number\\n\";\n    }else{\n       cout << \"it is an not an prime number\\n\";\n    }\n    \n}",
+      "explanation": ""
+    },
+    {
+      "title": "Prime Sieve",
+      "code": "#include<iostream>\n#include<vector>\nusing namespace std;\n#define N 1000000\n#define ll long long\n\n\nvoid primeSieve(vector<int> &sieve){\n\n\t//Mark 1 and 0 as not prime\n\tsieve[1] = sieve[0] = 0;\n\n\t// Initially you can say I will just mark all odd numbers as prime\n\tfor(int i=3; i<=N; i+=2){\n\t\tsieve[i] = 1;\n\t}\n\n\t//start from 3 and mark all multiples of given i (prime) as not prime\n\tfor(ll i=3; i<=N; i++){\t\n\t\tif(sieve[i]){\n\t\t\tfor(ll j = i*i; j<=N; j = j + i){\n\t\t\t\t//marking j as not prime\n\t\t\t\tsieve[j] = 0;\n\t\t\t}\n\t\t}\n\t}\n}\n\n\nint main(){\n\n\tvector<int> sieve(N+1,0); //fill constructor\n\tprimeSieve(sieve);\n\n\tfor(int i=0; i<=1000; i++){\n\t\tif(sieve[i]){\n\t\t\tcout<<i <<\" \";\n\t\t}\n\t}\n\t\n\n\treturn 0;\n}",
+      "explanation": ""
+    },
+    {
+      "title": "You are given and Q queries , in each query , you are given two integers A and B. find the no of primes in [a,b].",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n#define N 1000000\n#define ll long long int \n\nvoid primeSieve(vector<int> &sieve) {\n    sieve[0] = sieve[1] = 0;\n    for(int i = 2; i <= N; i++) sieve[i] = 1;\n\n    for(ll i = 2; i * i <= N; i++) {\n        if(sieve[i]) {\n            for(ll j = i * i; j <= N; j += i) {\n                sieve[j] = 0;\n            }\n        }\n    }\n}\n\nint main() {\n    vector<int> sieve(N + 1, 0);\n    primeSieve(sieve);\n\n    // Build prefix sum of prime counts\n    vector<int> prime_count(N + 1, 0);\n    for(int i = 1; i <= N; i++) {\n        prime_count[i] = prime_count[i - 1] + sieve[i];\n    }\n\n    // Process Queries\n    int Q;\n    cin >> Q;\n    while(Q--) {\n        int a, b;\n        cin >> a >> b;\n\n        if(a < 1) a = 1;\n        if(b > N) b = N;\n\n        int count = prime_count[b] - prime_count[a - 1];\n        cout << count << '\\n';\n    }\n\n    return 0;\n}",
+      "explanation": ""
+    },
+    {
+      "title": "prime factorisation using sieve(Log N)",
+      "code": "#include<iostream>\n#include<vector>\nusing namespace std;\n\n#define N 1000000\n\n\n#include<iostream>\n#include<vector>\nusing namespace std;\n#define N 1000000\n#define ll long long\n\n\nvoid primeSieve(vector<int> &sieve){\n\n\tfor(int i=1; i<=N; i++){\n\t\tsieve[i] = i;\n\t}\n\n\t//start from 2 to N\n\tfor(ll i=2; i<=N; i++){\n\t\t//whether a no is prime \n\t\tif(sieve[i]==i){\n\n\t\t\tfor(ll j= i*i; j<=N; j = j + i){\n\t\t\t\t//mark of them if they are already not marked with the value i\n\t\t\t\tif(sieve[j]==j){\n\t\t\t\t\tsieve[j] = i;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n}\n\n\nvector<int> getFactorisation(int number, vector<int> &sieve){\n\tvector<int> factors;\n\twhile(number!=1){\n\t\tfactors.push_back(sieve[number]);\n\t\tnumber = number/sieve[number];\n\t}\n\treturn factors;\n}\n\n\nint main(){\n\n\t//Prime Sieve (NLogLogN)\n\tvector<int> sieveArr(N+1,0);\n\tprimeSieve(sieveArr);\n\n\tint number;\n\tcin>>number;\n\t// Method for multiple queries  (O(LogN))\n\tvector<int>  factors = getFactorisation(number,sieveArr);\n\tfor(int f : factors){\n\t\tcout << f <<\",\";\n\t}\n\n\treturn 0;\n}",
+      "explanation": ""
+    },
+    {
+      "title": "prime factorisation (sqrt(N))",
+      "code": "#include<iostream>\nusing namespace std;\n\n//Brute Force O(N)\nvoid factorise(int n){\n\n\tfor(int i=2; i<=n; i++){\n\t\tif(n%i == 0){\n\t\t\tint cnt = 0;\n\t\t\twhile(n%i == 0){\n\t\t\t\tcnt++;\n\t\t\t\tn = n/i;\n\t\t\t}\n\n\t\t\tcout<<i<<\"^\"<<cnt<<\",\";\n\t\t}\n\t}\n}\n\n//Optimised Approach\n/*\nObs: Once N is reduced to a prime number, the \nonly factor that number will be the number itself.\n\nIf a number doesn't have any factor till sqrt(n) \nthen it is a prime number.\n*/\n// O(Sqrt(N))\nvoid factoriseOpt(int n){\n\n\tfor(int i=2; i*i<=n; i++){\n\t\tif(n%i == 0){\n\t\t\tint cnt = 0;\n\t\t\twhile(n%i == 0){\n\t\t\t\tcnt++;\n\t\t\t\tn = n/i;\n\t\t\t}\n\n\t\t\tcout<<i<<\"^\"<<cnt<<\",\";\n\t\t}\n\t}\n\n\t//Out of the loop\n\tif(n!=1){\n\t\tcout << n <<\"^\"<< 1 <<endl;\n\t}\n}\n\n\nint main(){\n\n\tint n;\n\tcin>>n;\n\n\tfactoriseOpt(n);\n\n\treturn 0;\n}",
+      "explanation": ""
+    },
+    {
+      "title": "segmented sieve",
+      "code": "#include<iostream>\n#include<vector>\nusing namespace std;\n\n#define N 100000\n\nint sieveArr[N+1] = {0};\nvector<int> primes;\n\n//Sieve of Eratosthenes (O(NLogLogN))\nvoid sieve(){\n\tfor(long long i=2; i<=N; i++){\n\t\t//mark non primes as 1\n\t\tif(sieveArr[i]==0){\n\t\t\tprimes.push_back(i);\n\t\t\t//marking all multiples of i (prime) as non-prime\n\t\t\tfor(long long j= i*i; j<=N; j+=i){\n\t\t\t\tsieveArr[j] = 1; //non-prime\n\t\t\t}\n\t\t}\n\t}\n}\n\n// Segmented Sieve\n\nint main(){\n\n\t//Precompute\n\tsieve();\n\tint t;\n\tcin>>t;\n\n\twhile(t--){\n\t\tint n,m;\n\t\tcin>>m >> n;\n\n\t\tvector<int> segment(n-m+1,0);\n\t\t\n\n\t\t//iterate over the primes, mark multiples of \n\t\t// prime in segment array as non-prime (1)\n\n\t\tfor(auto p : primes){\n\n\t\t\t//stop the loop if prime is larger than root n\n\t\t\tif( p*p > n){\n\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\tint start = (m/p) * p;\n\t\t\t\n\t\t\t// don't start from 0, instead 2 * prime\n\t\t\tif(p>=m and p<=n){\n\t\t\t\tstart = 2 * p;\n\t\t\t}\n\n\t\t\tfor(int j = start; j<=n; j = j + p){\n\t\t\t\tif(j < m){\n\t\t\t\t\tcontinue;\n\t\t\t\t}\n\t\t\t\t//non-prime\n\t\t\t\tsegment[j - m] = 1;\n\t\t\t}\n\t\t}\n\t\t//Loop over the number m ... n and print the primes\n\t\tfor(int i=m; i<=n; i++){\n\t\t\tif(segment[i-m]==0 and i!=1){\n\t\t\t\tcout<<i<<endl;\n\t\t\t}\n\t\t}\n\t\tcout<<endl;\n\n\t}\n\n\treturn 0;\n}",
+      "explanation": ""
+    }
   ]
 }

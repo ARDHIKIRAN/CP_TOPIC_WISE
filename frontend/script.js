@@ -153,18 +153,28 @@ function renderGroups() {
       const noteDiv = document.createElement("div");
       noteDiv.className = "note";
       const detailsId = `note-details-${group.replace(/[^a-zA-Z0-9]/g, '')}-${index}`;
+      let codeBlockHtml = '';
+      if (note.code) {
+        let highlighted = '';
+        try {
+          highlighted = highlightSublime(note.code);
+        } catch (e) {
+          highlighted = note.code.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/^[\r\n]+/, '');
+        }
+        codeBlockHtml = `
+          <div class='code-block-interactive' style="position:relative; margin-bottom:10px;">
+            <pre style="background:#222; color:#fff; border-radius:8px; padding:0; overflow-x:auto; font-size:15px; margin:0;"><code style="display:block; padding:14px 16px;">${highlighted}</code></pre>
+            <button onclick="copyCodeToClipboard(this)" style="position:absolute; top:8px; right:12px; background:#444; color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:13px; cursor:pointer;">Copy</button>
+          </div>
+        `;
+      }
       noteDiv.innerHTML = `
         <div class="note-title-toggle" style="display: flex; align-items: center; cursor: pointer;" onclick="toggleNoteDetails('${detailsId}')">
           <span class="dropdown-arrow" id="arrow-${detailsId}" style="font-size: 18px; margin-right: 8px;">▶</span>
           <h3 style="margin: 0;">${note.title || "Untitled Note"}</h3>
         </div>
         <div id="${detailsId}" class="note-details" style="display: none;">
-          ${note.code ? `
-            <div class='code-block-interactive' style="position:relative; margin-bottom:10px;">
-              <pre style="background:#222; color:#fff; border-radius:8px; padding:0; overflow-x:auto; font-size:15px; margin:0;"><code style="display:block; padding:14px 16px;">${note.code.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/^[\r\n]+/, '')}</code></pre>
-              <button onclick="copyCodeToClipboard(this)" style="position:absolute; top:8px; right:12px; background:#444; color:#fff; border:none; border-radius:4px; padding:2px 10px; font-size:13px; cursor:pointer;">Copy</button>
-            </div>
-          ` : ""}
+          ${codeBlockHtml}
           ${note.explanation ? `<pre class=\"explanation\">${note.explanation}</pre>` : ""}
           ${
             isAdmin
@@ -278,3 +288,121 @@ window.copyCodeToClipboard = function(btn) {
     setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
   });
 };
+
+// --- Sublime Text-like Syntax Highlighter ---
+function highlightSublime(code) {
+  // Escape HTML
+  code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Tokenize: regions are {type: 'string'|'comment'|'preproc'|'code', value: ...}
+  const regions = [];
+  let i = 0;
+  const len = code.length;
+  while (i < len) {
+    // Preprocessor (C/C++ style, at line start)
+    if ((i === 0 || code[i-1] === '\n') && code[i] === '#') {
+      let start = i;
+      while (i < len && code[i] !== '\n') i++;
+      regions.push({ type: 'preproc', value: code.slice(start, i) });
+      continue;
+    }
+    // Single-line comment (//...)
+    if (code[i] === '/' && code[i+1] === '/') {
+      let start = i;
+      i += 2;
+      while (i < len && code[i] !== '\n') i++;
+      regions.push({ type: 'comment', value: code.slice(start, i) });
+      continue;
+    }
+    // Multi-line comment (/* ... */)
+    if (code[i] === '/' && code[i+1] === '*') {
+      let start = i;
+      i += 2;
+      while (i < len && !(code[i] === '*' && code[i+1] === '/')) i++;
+      i += 2; // skip */
+      regions.push({ type: 'comment', value: code.slice(start, i) });
+      continue;
+    }
+    // Python-style comment (#...)
+    if (code[i] === '#') {
+      let start = i;
+      while (i < len && code[i] !== '\n') i++;
+      regions.push({ type: 'comment', value: code.slice(start, i) });
+      continue;
+    }
+    // String literal (single or double quotes)
+    if (code[i] === '"' || code[i] === "'") {
+      let quote = code[i];
+      let start = i;
+      i++;
+      while (i < len) {
+        if (code[i] === '\\') {
+          i += 2;
+        } else if (code[i] === quote) {
+          i++;
+          break;
+        } else {
+          i++;
+        }
+      }
+      regions.push({ type: 'string', value: code.slice(start, i) });
+      continue;
+    }
+    // Plain code (until next special region)
+    let start = i;
+    while (i < len) {
+      // Lookahead for any special region
+      if (
+        ((i === 0 || code[i-1] === '\n') && code[i] === '#') ||
+        (code[i] === '/' && (code[i+1] === '/' || code[i+1] === '*')) ||
+        code[i] === '#' ||
+        code[i] === '"' || code[i] === "'"
+      ) {
+        break;
+      }
+      i++;
+    }
+    if (start < i) {
+      regions.push({ type: 'code', value: code.slice(start, i) });
+    }
+  }
+
+  // Highlight each region
+  const keywords = [
+    'int', 'll','long', 'float', 'double', 'char', 'bool', 'void', 'auto', 'const', 'static', 'struct', 'public', 'private', 'protected', 'virtual', 'override', 'template', 'typename', 'using', 'namespace', 'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'goto', 'default', 'try', 'catch', 'throw', 'new', 'delete', 'this', 'true', 'false', 'nullptr', 'NULL', 'enum', 'typedef', 'sizeof', 'volatile', 'register', 'extern', 'inline', 'operator', 'friend', 'explicit', 'export', 'import', 'final', 'mutable', 'thread_local', 'static_cast', 'dynamic_cast', 'reinterpret_cast', 'const_cast', 'main', 'signed', 'unsigned', 'short', 'union', 'include', 'define', 'elif', 'endif', 'ifdef', 'ifndef', 'pragma', 'continue', 'break', 'switch', 'case', 'default', 'try', 'catch', 'throw', 'finally', 'import', 'from', 'as', 'pass', 'lambda', 'yield', 'global', 'nonlocal', 'assert', 'with', 'del', 'await', 'async', 'print', 'input', 'in', 'is', 'not', 'and', 'or', 'None', 'True', 'False', 'self', 'super', 'let', 'var', 'function', 'const', 'static', 'export', 'require', 'module', 'extends', 'implements', 'interface', 'package', 'protected', 'public', 'private', 'yield', 'await', 'async', 'constructor', 'get', 'set', 'of', 'instanceof', 'typeof', 'void', 'delete', 'new', 'try', 'catch', 'finally', 'throw', 'debugger', 'default', 'do', 'else', 'if', 'in', 'return', 'switch', 'this', 'while', 'with', 'case', 'break', 'continue', 'for', 'function', 'super', 'class', 'enum', 'export', 'extends', 'import', 'implements', 'interface', 'let', 'package', 'private', 'protected', 'public', 'static', 'yield', 'as', 'any', 'boolean', 'constructor', 'declare', 'get', 'module', 'require', 'number', 'set', 'string', 'symbol', 'type', 'from', 'of'
+  ];
+  const keywordRegex = new RegExp('\\b(' + keywords.join('|') + ')\\b', 'g');
+  const typeRegex = /\b(int|long|float|double|char|bool|void|string|vector|map|set|list|queue|stack|deque|pair|tuple|array|unordered_map|unordered_set|size_t|ll|ull)\b/g;
+  const numberRegex = /\b(0x[\da-fA-F]+|\d+\.?\d*|\.\d+)\b/g;
+  const funcRegex = /\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g;
+  const varRegex = /\b(?:int|long|float|double|char|bool|void|string|auto|const)\s+([a-zA-Z_][a-zA-Z0-9_]*)\b(?!\s*\()/g;
+
+  function highlightCodeRegion(text) {
+    return text
+      .replace(keywordRegex, '<span class="sublime-keyword">$1</span>')
+      .replace(typeRegex, '<span class="sublime-type">$1</span>')
+      .replace(numberRegex, '<span class="sublime-number">$1</span>')
+      .replace(funcRegex, function(match, p1) {
+        if (keywords.includes(p1)) return match;
+        return '<span class="sublime-func">' + p1 + '</span>';
+      })
+      .replace(varRegex, function(match, p1) {
+        if (keywords.includes(p1)) return match;
+        return match.replace(p1, '<span class="sublime-var">' + p1 + '</span>');
+      });
+  }
+
+  let html = '';
+  for (const region of regions) {
+    if (region.type === 'string') {
+      html += '<span class="sublime-string">' + region.value + '</span>';
+    } else if (region.type === 'comment') {
+      html += '<span class="sublime-comment">' + region.value + '</span>';
+    } else if (region.type === 'preproc') {
+      html += '<span class="sublime-preproc">' + region.value + '</span>';
+    } else {
+      html += highlightCodeRegion(region.value);
+    }
+  }
+  return html;
+}

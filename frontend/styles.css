@@ -300,3 +300,12 @@ button:hover {
 .user-mode .note h3 {
   color: #e0e0e0 !important;
 }
+
+.sublime-preproc { color: #fd971f; }
+.sublime-comment { color: #75715e; }
+.sublime-string { color: #e6db74; }
+.sublime-keyword { color: #f92672; }
+.sublime-type { color: #66d9ef; }
+.sublime-number { color: #ae81ff; }
+.sublime-func { color: #a9dc76; }
+.sublime-var { color: #66d9ef; }
